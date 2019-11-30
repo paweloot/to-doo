@@ -8,14 +8,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.firestore.FirebaseFirestore
 
 private const val TAG = "MainActivity"
-private const val TO_DOO_NOTE_KEY = "toDooNote"
+private const val NOTES_COLLECTION_KEY = "notes"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var toDooViewModel: ToDooViewModel
 
     private val collectionRef =
-            FirebaseFirestore.getInstance().collection("notes")
+            FirebaseFirestore.getInstance().collection(NOTES_COLLECTION_KEY)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
