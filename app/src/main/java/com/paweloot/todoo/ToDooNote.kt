@@ -1,5 +1,8 @@
 package com.paweloot.todoo
 
+import com.google.firebase.Timestamp
+
 class ToDooNote {
-    val content: String = ""
+    var content: String = ""
+    var timestamp: Timestamp? = null
 }

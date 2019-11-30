@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 
 private const val TAG = "MainActivity"
 private const val NOTES_COLLECTION_KEY = "notes"
@@ -27,12 +29,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             val notes = mutableListOf<ToDooNote>()
-            for (doc in querySnapshot!!) {
+            val sortedQuerySnapshot = querySnapshot?.sortedBy { q ->
+                q.getTimestamp("timestamp")
+            }
+            for (doc in sortedQuerySnapshot!!) {
                 notes.add(doc.toObject(ToDooNote::class.java))
             }
 
             // Add an empty note to the end of the list
-            notes.add(ToDooNote())
+            notes.add(ToDooNote().apply { timestamp = Timestamp(Date()) })
 
             toDooViewModel.notes.postValue(notes)
         }
@@ -50,12 +55,14 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.to_doo_container, toDooFragment)
             .commit()
 
-        toDooViewModel.toDooNote.observe(
+        toDooViewModel.newNote.observe(
             this,
-            Observer { toDoNote ->
-                if (toDoNote.content.isBlank()) return@Observer
+            Observer { newNote ->
+                if (newNote.content.isBlank()) return@Observer
 
-                collectionRef.add(toDoNote).addOnSuccessListener {
+                newNote.timestamp = Timestamp(Date())
+
+                collectionRef.add(newNote).addOnSuccessListener {
                     Log.d(TAG, "Document has been saved!")
                 }.addOnFailureListener {
                     Log.d(TAG, "Document has NOT been saved!")

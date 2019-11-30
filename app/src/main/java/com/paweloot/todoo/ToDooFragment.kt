@@ -40,20 +40,9 @@ class ToDooFragment : Fragment() {
         toDooViewModel.notes.observe(
             viewLifecycleOwner,
             Observer<List<ToDooNote>> { notes ->
-                toDooList.adapter = ToDooAdapter(notes)
+                toDooList.adapter = ToDooAdapter(requireContext(), notes)
             }
         )
-
-        fabAdd.setOnClickListener {
-            val adapter = toDooList.adapter as ToDooAdapter
-            val newNoteEditText =
-                toDooList.findViewHolderForLayoutPosition(adapter.notes.size - 1)
-                    ?.itemView
-
-            newNoteEditText?.visibility = View.VISIBLE
-        }
-
-
 
         return view
     }
