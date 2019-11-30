@@ -15,31 +15,49 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toDooViewModel: ToDooViewModel
 
     private val collectionRef =
-            FirebaseFirestore.getInstance().collection(NOTES_COLLECTION_KEY)
+        FirebaseFirestore.getInstance().collection(NOTES_COLLECTION_KEY)
+
+    override fun onStart() {
+        super.onStart()
+
+        collectionRef.addSnapshotListener(this) { querySnapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listening failed", e)
+                return@addSnapshotListener
+            }
+
+            val notes = mutableListOf<ToDooNote>()
+            for (doc in querySnapshot!!) {
+                notes.add(doc.toObject(ToDooNote::class.java))
+            }
+
+            toDooViewModel.notes.postValue(notes)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         toDooViewModel =
-                ViewModelProviders.of(this).get(ToDooViewModel::class.java)
+            ViewModelProviders.of(this).get(ToDooViewModel::class.java)
 
         val toDooFragment = ToDooFragment.newInstance()
         supportFragmentManager.beginTransaction()
-                .add(R.id.to_doo_container, toDooFragment)
-                .commit()
+            .add(R.id.to_doo_container, toDooFragment)
+            .commit()
 
         toDooViewModel.toDooNote.observe(
-                this,
-                Observer { toDoNote ->
-                    if (toDoNote.content.isBlank()) return@Observer
+            this,
+            Observer { toDoNote ->
+                if (toDoNote.content.isBlank()) return@Observer
 
-                    collectionRef.add(toDoNote).addOnSuccessListener {
-                        Log.d(TAG, "Document has been saved!")
-                    }.addOnFailureListener {
-                        Log.d(TAG, "Document has NOT been saved!")
-                    }
+                collectionRef.add(toDoNote).addOnSuccessListener {
+                    Log.d(TAG, "Document has been saved!")
+                }.addOnFailureListener {
+                    Log.d(TAG, "Document has NOT been saved!")
                 }
+            }
         )
     }
 }
