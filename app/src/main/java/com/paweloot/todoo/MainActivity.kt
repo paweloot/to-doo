@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
                 notes.add(doc.toObject(ToDooNote::class.java))
             }
 
+            // Add an empty note to the end of the list
+            notes.add(ToDooNote())
+
             toDooViewModel.notes.postValue(notes)
         }
     }
