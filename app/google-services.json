@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "218366191022",
+    "firebase_url": "https://todoo-5c5e1.firebaseio.com",
+    "project_id": "todoo-5c5e1",
+    "storage_bucket": "todoo-5c5e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218366191022:android:890abef286c07fda02543f",
+        "android_client_info": {
+          "package_name": "com.paweloot.todoo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "218366191022-k8sq8mggq2ss9vov7a3ft10t01lesr9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALG_Nk7RmyvW8Hu9vA42Ui8vW7dWUF4Vs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218366191022-k8sq8mggq2ss9vov7a3ft10t01lesr9t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
