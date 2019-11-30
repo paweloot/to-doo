@@ -1,7 +1,8 @@
 package com.paweloot.todoo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,5 +23,12 @@ class MainActivity : AppCompatActivity() {
                 .commit()
 
         val db = FirebaseFirestore.getInstance()
+
+        toDooViewModel.toDooNote.observe(
+                this,
+                Observer { toDoNote ->
+
+                }
+        )
     }
 }
