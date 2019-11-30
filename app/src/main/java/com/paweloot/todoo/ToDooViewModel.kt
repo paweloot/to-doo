@@ -5,5 +5,5 @@ import androidx.lifecycle.ViewModel
 
 class ToDooViewModel : ViewModel() {
 
-    val toDooNote: MutableLiveData<String> = MutableLiveData()
+    val toDooNote: MutableLiveData<ToDooNote> = MutableLiveData()
 }

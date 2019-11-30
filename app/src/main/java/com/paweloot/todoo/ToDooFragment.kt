@@ -36,7 +36,7 @@ class ToDooFragment : Fragment() {
 
         addButton.setOnClickListener {
             toDooViewModel.toDooNote.postValue(
-                toDooEditText.text.toString()
+                ToDooNote(toDooEditText.text.toString())
             )
         }
 
