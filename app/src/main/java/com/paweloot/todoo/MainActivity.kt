@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var toDooViewModel: ToDooViewModel
 
-    private val collecionRef =
+    private val collectionRef =
             FirebaseFirestore.getInstance().collection("notes")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                 Observer { toDoNote ->
                     if (toDoNote.content.isBlank()) return@Observer
 
-                    collecionRef.add(toDoNote).addOnSuccessListener {
+                    collectionRef.add(toDoNote).addOnSuccessListener {
                         Log.d(TAG, "Document has been saved!")
                     }.addOnFailureListener {
                         Log.d(TAG, "Document has NOT been saved!")
