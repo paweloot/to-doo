@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 class NoteViewModel : ViewModel() {
 
     val newToDoo: MutableLiveData<ToDoo> = MutableLiveData()
-//    val notes: MutableLiveData<List<ToDooNote>> = MutableLiveData()
 
-    val note: MutableLiveData<Note> = MutableLiveData()
+    val noteTitle: MutableLiveData<String> = MutableLiveData()
+    val toDoos: MutableLiveData<List<ToDoo>> = MutableLiveData()
 }

@@ -36,13 +36,18 @@ class ToDooFragment : Fragment() {
         noteTitle = view.findViewById(R.id.note_title)
         toDooList = view.findViewById(R.id.to_doo_list)
 
-        noteTitle.text = "TODO"
-
         toDooList.layoutManager = LinearLayoutManager(context)
-        noteViewModel.note.observe(
+        noteViewModel.toDoos.observe(
             viewLifecycleOwner,
-            Observer { note ->
-                toDooList.adapter = ToDooAdapter(requireContext(), note.toDoos)
+            Observer { toDoos ->
+                toDooList.adapter = ToDooAdapter(requireContext(), toDoos)
+            }
+        )
+
+        noteViewModel.noteTitle.observe(
+            viewLifecycleOwner,
+            Observer { title ->
+                noteTitle.text = title
             }
         )
 

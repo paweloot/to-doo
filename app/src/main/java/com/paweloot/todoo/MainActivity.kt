@@ -10,40 +10,37 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
 private const val TAG = "MainActivity"
-private const val NOTES_COLLECTION_KEY = "notes"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var noteViewModel: NoteViewModel
 
-    private val collectionRef =
-        FirebaseFirestore.getInstance().collection(NOTES_COLLECTION_KEY)
+    private val db = FirebaseFirestore.getInstance()
+    private val noteReference =
+        db.document("notes/note")
+    private val toDoosReference =
+        db.collection("notes/note/toDoos")
 
     private val onNewToDooObserver = Observer<ToDoo> { newToDoo ->
         if (newToDoo.content.isBlank()) return@Observer
 
         newToDoo.timestamp = Timestamp(Date())
-
-        collectionRef.add(newToDoo).addOnSuccessListener {
-            Log.d(TAG, "Document has been saved!")
-        }.addOnFailureListener {
-            Log.d(TAG, "Document has NOT been saved!")
-        }
+        toDoosReference.add(newToDoo)
     }
 
     override fun onStart() {
         super.onStart()
 
-        collectionRef.addSnapshotListener(this) { querySnapshot, e ->
+        toDoosReference.addSnapshotListener(this) { querySnapshot, e ->
             if (e != null) {
                 Log.w(TAG, "Listening failed", e)
                 return@addSnapshotListener
             }
 
-            val fetchedToDoos = mutableListOf<ToDoo>()
             val sortedQuerySnapshot = querySnapshot?.sortedBy { q ->
                 q.getTimestamp("timestamp")
             }
+            val fetchedToDoos = mutableListOf<ToDoo>()
             for (doc in sortedQuerySnapshot!!) {
                 fetchedToDoos.add(doc.toObject(ToDoo::class.java))
             }
@@ -51,7 +48,14 @@ class MainActivity : AppCompatActivity() {
             // Add an empty note to the end of the list
             fetchedToDoos.add(ToDoo().apply { timestamp = Timestamp(Date()) })
 
-            noteViewModel.note.postValue(Note().apply { toDoos = fetchedToDoos })
+            noteViewModel.toDoos.postValue(fetchedToDoos)
+        }
+
+        noteReference.addSnapshotListener { documentSnapshot, e ->
+            val newTitle = documentSnapshot?.getString("title")
+            newTitle.let {
+                noteViewModel.noteTitle.postValue(newTitle)
+            }
         }
     }
 
