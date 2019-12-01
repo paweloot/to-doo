@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class ToDooFragment : Fragment() {
@@ -17,7 +16,6 @@ class ToDooFragment : Fragment() {
     private lateinit var toDooViewModel: ToDooViewModel
 
     private lateinit var toDooList: RecyclerView
-    private lateinit var fabAdd: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +31,6 @@ class ToDooFragment : Fragment() {
         val view =
             inflater.inflate(R.layout.fragment_to_doo, container, false)
 
-        fabAdd = view.findViewById(R.id.fab_add)
         toDooList = view.findViewById(R.id.to_doo_list)
         toDooList.layoutManager = LinearLayoutManager(context)
 
