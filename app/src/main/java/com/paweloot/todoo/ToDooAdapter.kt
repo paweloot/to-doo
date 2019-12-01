@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
@@ -27,6 +28,7 @@ class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
     override fun onBindViewHolder(holder: ToDooHolder, position: Int) {
         // if it's the last element used to add notes, hide it
         if (position == notes.size - 1) {
+            holder.noteCheck.visibility = View.GONE
             setSubmitOnEnter(holder.contentEditText)
         } else {
             disableEditText(holder.contentEditText)
@@ -67,6 +69,8 @@ class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
     inner class ToDooHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val contentEditText =
             itemView.findViewById(R.id.note_content) as EditText
+        val noteCheck: CheckBox =
+            itemView.findViewById(R.id.note_check)
 
         fun setContent(toDoo: ToDooNote) {
             contentEditText.setText(toDoo.content)
