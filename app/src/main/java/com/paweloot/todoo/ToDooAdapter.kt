@@ -13,11 +13,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 
-class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
+class ToDooAdapter(val context: Context, val notes: List<ToDoo>) :
     RecyclerView.Adapter<ToDooAdapter.ToDooHolder>() {
 
-    private val toDooViewModel = ViewModelProviders.of(context as FragmentActivity)
-        .get(ToDooViewModel::class.java)
+    private val noteViewModel = ViewModelProviders.of(context as FragmentActivity)
+        .get(NoteViewModel::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDooHolder {
         val view = LayoutInflater.from(parent.context)
@@ -55,8 +55,8 @@ class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
         newNote.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                toDooViewModel.newNote.postValue(
-                    ToDooNote().apply {
+                noteViewModel.newToDoo.postValue(
+                    ToDoo().apply {
                         content = newNote.text.toString()
                     }
                 )
@@ -85,7 +85,7 @@ class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
         val noteCheck: CheckBox =
             itemView.findViewById(R.id.note_check)
 
-        fun setContent(toDoo: ToDooNote) {
+        fun setContent(toDoo: ToDoo) {
             contentEditText.setText(toDoo.content)
         }
     }

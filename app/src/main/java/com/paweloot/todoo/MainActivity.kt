@@ -14,17 +14,17 @@ private const val NOTES_COLLECTION_KEY = "notes"
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var toDooViewModel: ToDooViewModel
+    private lateinit var noteViewModel: NoteViewModel
 
     private val collectionRef =
         FirebaseFirestore.getInstance().collection(NOTES_COLLECTION_KEY)
 
-    private val onNewNoteObserver = Observer<ToDooNote> { newNote ->
-        if (newNote.content.isBlank()) return@Observer
+    private val onNewToDooObserver = Observer<ToDoo> { newToDoo ->
+        if (newToDoo.content.isBlank()) return@Observer
 
-        newNote.timestamp = Timestamp(Date())
+        newToDoo.timestamp = Timestamp(Date())
 
-        collectionRef.add(newNote).addOnSuccessListener {
+        collectionRef.add(newToDoo).addOnSuccessListener {
             Log.d(TAG, "Document has been saved!")
         }.addOnFailureListener {
             Log.d(TAG, "Document has NOT been saved!")
@@ -40,18 +40,18 @@ class MainActivity : AppCompatActivity() {
                 return@addSnapshotListener
             }
 
-            val notes = mutableListOf<ToDooNote>()
+            val fetchedToDoos = mutableListOf<ToDoo>()
             val sortedQuerySnapshot = querySnapshot?.sortedBy { q ->
                 q.getTimestamp("timestamp")
             }
             for (doc in sortedQuerySnapshot!!) {
-                notes.add(doc.toObject(ToDooNote::class.java))
+                fetchedToDoos.add(doc.toObject(ToDoo::class.java))
             }
 
             // Add an empty note to the end of the list
-            notes.add(ToDooNote().apply { timestamp = Timestamp(Date()) })
+            fetchedToDoos.add(ToDoo().apply { timestamp = Timestamp(Date()) })
 
-            toDooViewModel.notes.postValue(notes)
+            noteViewModel.note.postValue(Note().apply { toDoos = fetchedToDoos })
         }
     }
 
@@ -59,14 +59,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        toDooViewModel =
-            ViewModelProviders.of(this).get(ToDooViewModel::class.java)
+        noteViewModel =
+            ViewModelProviders.of(this).get(NoteViewModel::class.java)
 
         val toDooFragment = ToDooFragment.newInstance()
         supportFragmentManager.beginTransaction()
             .add(R.id.to_doo_container, toDooFragment)
             .commit()
 
-        toDooViewModel.newNote.observe(this, onNewNoteObserver)
+        noteViewModel.newToDoo.observe(this, onNewToDooObserver)
     }
 }
