@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ToDooFragment : Fragment() {
 
-    private lateinit var noteViewModel: NoteViewModel
+    private lateinit var toDooViewModel: ToDooViewModel
 
     private lateinit var noteTitle: TextView
     private lateinit var toDooList: RecyclerView
@@ -22,8 +22,8 @@ class ToDooFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        noteViewModel =
-            ViewModelProviders.of(requireActivity()).get(NoteViewModel::class.java)
+        toDooViewModel =
+            ViewModelProviders.of(requireActivity()).get(ToDooViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -37,17 +37,10 @@ class ToDooFragment : Fragment() {
         toDooList = view.findViewById(R.id.to_doo_list)
 
         toDooList.layoutManager = LinearLayoutManager(context)
-        noteViewModel.toDoos.observe(
+        toDooViewModel.toDoos.observe(
             viewLifecycleOwner,
             Observer { toDoos ->
                 toDooList.adapter = ToDooAdapter(requireContext(), toDoos)
-            }
-        )
-
-        noteViewModel.noteTitle.observe(
-            viewLifecycleOwner,
-            Observer { title ->
-                noteTitle.text = title
             }
         )
 
