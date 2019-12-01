@@ -1,10 +1,11 @@
 package com.paweloot.todoo
 
 import android.content.Context
-import android.view.KeyEvent
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
@@ -26,23 +27,19 @@ class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
     override fun onBindViewHolder(holder: ToDooHolder, position: Int) {
         // if it's the last element used to add notes, hide it
         if (position == notes.size - 1) {
-            setSubmitOnEnter(holder)
-            holder.contentEditText.text.clear()
+            setSubmitOnEnter(holder.contentEditText)
+        } else {
+            disableEditText(holder.contentEditText)
+            holder.setContent(notes[position])
         }
-
-        holder.setContent(notes[position])
     }
 
     override fun getItemCount(): Int = notes.size
 
-    private fun setSubmitOnEnter(holder: ToDooHolder) {
-        val newNote: EditText = holder.contentEditText
+    private fun setSubmitOnEnter(newNote: EditText) {
+        newNote.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-        newNote.setOnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER
-                && event.action == KeyEvent.ACTION_UP
-                && newNote.text.isNotBlank()
-            ) {
                 toDooViewModel.newNote.postValue(
                     ToDooNote().apply {
                         content = newNote.text.toString()
@@ -50,11 +47,20 @@ class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
                 )
 
                 newNote.clearFocus()
+                newNote.text.clear()
 
-                return@setOnKeyListener true
+                return@setOnEditorActionListener true
             }
 
             false
+        }
+    }
+
+    private fun disableEditText(field: EditText) {
+        field.apply {
+            isFocusable = false
+            inputType = InputType.TYPE_NULL
+            setBackgroundResource(android.R.color.transparent)
         }
     }
 
