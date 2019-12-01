@@ -19,6 +19,18 @@ class MainActivity : AppCompatActivity() {
     private val collectionRef =
         FirebaseFirestore.getInstance().collection(NOTES_COLLECTION_KEY)
 
+    private val onNewNoteObserver = Observer<ToDooNote> { newNote ->
+        if (newNote.content.isBlank()) return@Observer
+
+        newNote.timestamp = Timestamp(Date())
+
+        collectionRef.add(newNote).addOnSuccessListener {
+            Log.d(TAG, "Document has been saved!")
+        }.addOnFailureListener {
+            Log.d(TAG, "Document has NOT been saved!")
+        }
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -55,19 +67,6 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.to_doo_container, toDooFragment)
             .commit()
 
-        toDooViewModel.newNote.observe(
-            this,
-            Observer { newNote ->
-                if (newNote.content.isBlank()) return@Observer
-
-                newNote.timestamp = Timestamp(Date())
-
-                collectionRef.add(newNote).addOnSuccessListener {
-                    Log.d(TAG, "Document has been saved!")
-                }.addOnFailureListener {
-                    Log.d(TAG, "Document has NOT been saved!")
-                }
-            }
-        )
+        toDooViewModel.newNote.observe(this, onNewNoteObserver)
     }
 }
