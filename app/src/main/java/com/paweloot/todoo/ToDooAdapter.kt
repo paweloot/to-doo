@@ -1,6 +1,7 @@
 package com.paweloot.todoo
 
 import android.content.Context
+import android.graphics.Paint
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,18 @@ class ToDooAdapter(val context: Context, val notes: List<ToDooNote>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDooHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item_note, parent, false)
+
+        val contentEditText: EditText = view.findViewById(R.id.note_content)
+        val noteCheckBox: CheckBox = view.findViewById(R.id.note_check)
+        noteCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                contentEditText.paintFlags = contentEditText.paintFlags or
+                        Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                contentEditText.paintFlags = contentEditText.paintFlags and
+                        Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+        }
 
         return ToDooHolder(view)
     }
